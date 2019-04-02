@@ -1,0 +1,26 @@
+- name: add intel_security_patch repo
+  include: setup_repo.yaml
+
+- name: install kernel for meltdown/spectre fix
+  yum:
+    state: present
+    name: "{{ item }}"
+    disablerepo: '*'
+    enablerepo: 'intel_security_patch'
+  with_items:
+    - kernel
+    - kernel-tools
+    - kernel-headers
+    - dracut*
+  when:
+    - ansible_os_family == "RedHat"
+    - '"7.4" in ansible_distribution_version'
+
+- name: Verfiy default kernel of next boot
+  shell: awk -F\' '$1=="menuentry " {print $2}' /etc/grub2.cfg | head -1
+  register: next_kernel
+  changed_when: False
+
+- name: Next boot kernel verison is incorrect
+  debug: msg="{{next_kernel.stdout}} is the next boot, should be {{ k_version }}"
+  failed_when: "k_version not in next_kernel.stdout"

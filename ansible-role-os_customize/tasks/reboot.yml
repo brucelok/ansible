@@ -1,0 +1,10 @@
+- name: reboot {{ inventory_hostname }}
+  shell: sleep 3; /usr/sbin/reboot
+  async: 1
+  poll: 0
+  ignore_errors: true
+  failed_when: false
+
+- name: wait for host to come back {{ inventory_hostname }}
+  wait_for: host={{ ansible_host }} port=22 timeout=600 delay=30 state=started
+  delegate_to: "{{ server }}"

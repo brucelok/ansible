@@ -1,0 +1,25 @@
+- name: check installed enic driver version
+  shell: modinfo -F version enic
+  register: enic_ver
+
+- name: Install desired enic driver for BIOS 3.0.3
+  yum:
+    name: https://www.mycompany.com/drivers/C-Series/3.0.3/Linux/Network/Cisco/VIC/RHEL/RHEL7.4/kmod-enic-2.3.0.44-rhel7u4.el7.x86_64.rpm
+    state: present
+  when:
+    - enic_ver.stdout != enic_desired
+    - ansible_virtualization_role == "host"
+    - ansible_os_family == "RedHat"
+    - '"7.4" in ansible_distribution_version'
+    - '"3.0.3" in ansible_bios_version'
+
+- name: Install desired enic driver for BIOS 3.1.2
+  yum:
+    name: https://www.mycompany.com/drivers/C-Series/3.1.2/Linux/Network/Cisco/VIC/RHEL/RHEL7.4/kmod-enic-2.3.0.44-rhel7u4.el7.x86_64.rpm
+    state: present
+  when:
+    - enic_ver.stdout != enic_desired
+    - ansible_virtualization_role == "host"
+    - ansible_os_family == "RedHat"
+    - '"7.4" in ansible_distribution_version'
+    - '"3.1.2" in ansible_bios_version'

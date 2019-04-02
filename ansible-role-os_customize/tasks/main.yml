@@ -1,0 +1,41 @@
+---
+- name: verfiy default kernel of next boot
+  shell: awk -F\' '$1=="menuentry " {print $2}' /etc/grub2.cfg | head -1
+  register: next_kernel_boot
+  changed_when: False
+
+- debug: msg="Running Kernel {{ ansible_kernel }}, Next boot kernel {{ next_kernel_boot.stdout }}"
+
+- include: kernel_update.yml
+  when: "k_version not in next_kernel_boot.stdout"
+
+- include: set_interface.yml
+
+- include: bootup_nmcli.yml
+
+- include: enic_upgrade.yml
+
+- name:  disable firewalld and multipathd
+  service:
+    name: "{{ item }}"
+    enabled: no
+    state: stopped
+  with_items:
+    - multipathd
+    - firewalld
+
+- name: check if reboot is needed
+  shell: needs-restarting -r
+  register: reboot_hint
+  failed_when: false
+  changed_when: reboot_hint.rc == 1
+
+- include: reboot.yml
+  when: reboot_hint.rc == 1
+
+- name: Refresh kernel fact
+  setup:
+    filter: ansible_kernel
+
+- name: Post verfiy running kernel
+  debug: msg="{{ansible_kernel}}"

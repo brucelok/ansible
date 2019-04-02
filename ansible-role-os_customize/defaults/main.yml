@@ -1,0 +1,3 @@
+---
+k_version: "{{ kernel_version | default('3.10.0-693.11.6.el7.x86_64') }}"
+enic_desired: '2.3.0.44'

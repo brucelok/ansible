@@ -1,0 +1,19 @@
+- name: ensure NetworkManager is running
+  service:
+      name: NetworkManager
+      enabled: yes
+      state: started
+
+- name: enforce nmcli bring up interfaces at boot time
+  lineinfile:
+    dest: /etc/rc.local
+    state: present
+    regexp: '^nmcli conn up {{ item }}'
+    line: 'nmcli conn up {{ item }}'
+    insertbefore: '#Puppet_PostOS_start#'
+  when:
+    - ansible_virtualization_role == "host"
+    - ansible_os_family == "RedHat"
+  with_items:
+    - eth0
+    - eth1

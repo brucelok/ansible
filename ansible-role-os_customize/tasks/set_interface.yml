@@ -1,0 +1,11 @@
+- name: set interface DNS domain
+  lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 state=present regexp='^DOMAIN' line='DOMAIN=abc.com'
+
+- name: set interface PEERDNS=yes
+  lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth0 state=present regexp='^PEERDNS=' line='PEERDNS=yes'
+
+- name: set interface DEFROUTE=no
+  lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth1 state=present regexp='^DEFROUTE' line='DEFROUTE=no'
+
+- name: set interface BOOTPROTO=none
+  lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-eth1 state=present regexp='^BOOTPROTO=' line='BOOTPROTO=none'

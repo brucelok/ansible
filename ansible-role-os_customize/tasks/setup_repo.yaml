@@ -1,0 +1,8 @@
+- name: check if intel_security_patch repo exists
+  shell: yum repolist all | awk '{ print $1}' | grep {{ static_repo }}$
+  register: repo_exist
+  ignore_errors: yes
+
+- name: Add repo
+  template: src=repo.j2 dest="/etc/yum.repos.d/{{ static_repo }}.repo"
+  when: repo_exist.rc != 0
