@@ -7,7 +7,7 @@ default:
 syntax-check:
   stage: check
   script:
-    - ansible-playbook deploy.yml --syntax-check -e target=all
+    - ansible-playbook deploy.yml --syntax-check -e target=localhost
   only:
     refs:
       - develop
