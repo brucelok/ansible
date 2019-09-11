@@ -7,7 +7,7 @@ default:
 syntax-check:
   stage: check
   script:
-    - ansible-playbook ansible-role-os_customize/tasks/main.yml --syntax-check
+    - ansible-playbook deploy.yml --syntax-check -e target=all
   only:
     refs:
       - develop

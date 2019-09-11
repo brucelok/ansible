@@ -1,0 +1,13 @@
+---
+
+- name: run OS customization
+  hosts: "{{ target }}"
+  gather_facts: false
+
+  pre_tasks:
+    - assert:
+        that:
+        - type == 'physical'
+
+  roles:
+  - role: ansible-role-os_customize
