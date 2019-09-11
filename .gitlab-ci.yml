@@ -1,0 +1,16 @@
+stages:
+  - check
+
+default:
+  image: ansible/ansible-runner:latest
+
+syntax-check:
+  stage: check
+  script:
+    - ansible-playbook ansible-role-os_customize/tasks/main.yml --syntax-check
+  only:
+    refs:
+      - develop
+      - master
+      - /^feature.*$/
+  when: manual
